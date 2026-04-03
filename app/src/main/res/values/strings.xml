@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Personal Finance Tracker</string>
+    <string name="transaction_page">Transactions</string>
+    <string name="insights_page">Insights</string>
+    <string name="back_button">Back Button</string>
+    <string name="add_transaction">Add Transaction</string>
+</resources>
