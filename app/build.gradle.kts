@@ -61,11 +61,11 @@ dependencies {
     // Room (Cleaned up versions and configurations)
     val roomVersion = "2.8.4"
     implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    ksp("androidx.room:room-compiler:$roomVersion")
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    implementation("androidx.sqlite:sqlite:2.5.0")
-    implementation("androidx.sqlite:sqlite-ktx:2.5.0")
+    implementation("androidx.sqlite:sqlite:2.6.2")
+    implementation("androidx.sqlite:sqlite-ktx:2.6.2")
 
     // Testing
     testImplementation(libs.junit)
@@ -75,4 +75,6 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    implementation(libs.charty)
 }

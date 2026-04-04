@@ -19,6 +19,7 @@ material3 = "1.4.0"
 uiText = "1.10.6"
 runtime = "1.10.6"
 composeMaterial = "1.6.0"
+charty = "3.0.0-rc01"
 
 [libraries]
 androidx-compose-bom-v20260301 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
@@ -46,6 +47,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3",
 androidx-compose-ui-text = { group = "androidx.compose.ui", name = "ui-text", version.ref = "uiText" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 compose-material = { group = "androidx.wear.compose", name = "compose-material", version.ref = "composeMaterial" }
+charty = { module = "com.himanshoe:charty", version.ref = "charty" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

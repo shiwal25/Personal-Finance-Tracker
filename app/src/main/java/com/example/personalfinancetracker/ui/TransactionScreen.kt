@@ -49,9 +49,9 @@ fun TransactionScreen(
     modifier: Modifier = Modifier,
     onDelete: (Transaction) -> Unit,
     onEdit: (Transaction) -> Unit,
-    searchQuery: String,                         // Add this
-    onSearchQueryChange: (String) -> Unit,       // Add this
-    typeFilter: String,                          // Add this
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    typeFilter: String,
     onTypeFilterChange: (String) -> Unit,
 ) {
     if(transactions.isEmpty()){

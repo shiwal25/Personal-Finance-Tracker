@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -39,6 +40,7 @@ import com.example.personalfinancetracker.ui.AddTransactionScreen
 import com.example.personalfinancetracker.ui.DashBoardViewModel
 import com.example.personalfinancetracker.ui.DashBoardViewModelFactory
 import com.example.personalfinancetracker.ui.HomeScreen
+import com.example.personalfinancetracker.ui.InsightsScreen
 import com.example.personalfinancetracker.ui.TransactionScreen
 import com.example.personalfinancetracker.ui.TransactionViewModel
 import com.example.personalfinancetracker.ui.TransactionViewModelFactory
@@ -217,7 +219,15 @@ fun PersonalFinanceTrackerApp(
                 )
             }
             composable (route = PersonalFinanceTrackerScreen.Insights.name){
-
+                val monthlyPieData = transactionViewModel.getMonthlyCategoryData(transactionList)
+                val incomeExpenseData = transactionViewModel.getIncomeExpenseData(transactionList)
+                val sixMonthsData = transactionViewModel.getSixMonthData((transactionList))
+                InsightsScreen(
+                    modifier = Modifier.padding(innerPadding),
+                    pieChartData = monthlyPieData,
+                    incomeExpenseData = incomeExpenseData,
+                    sixMonthsData = sixMonthsData
+                )
             }
             composable(route = PersonalFinanceTrackerScreen.AddTransaction.name,
                 enterTransition = {
