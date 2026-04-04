@@ -11,6 +11,7 @@ import com.example.personalfinancetracker.data.TransactionsRepository
 import com.himanshoe.charty.bar.data.BarData
 import com.himanshoe.charty.bar.data.BarGroup
 import com.himanshoe.charty.color.ChartyColor
+import com.himanshoe.charty.line.data.LineData
 import com.himanshoe.charty.pie.data.PieData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -226,12 +227,6 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
         Color(0xFF00BCD4)  // Cyan
     )
 
-    data class MonthlyCashFlow(
-        val month: String,
-        val income: Float,
-        val expense: Float
-    )
-
     fun getIncomeExpenseData(transactions: List<Transaction>): List<BarGroup> {
         val monthFormat = SimpleDateFormat("MMM", Locale.getDefault())
 
@@ -295,6 +290,37 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
 
         return last6MonthsLabels.map { monthLabel ->
             BarData(monthLabel, groupedExpenses[monthLabel] ?: 0f)
+        }
+    }
+
+    fun getLastWeekData(transactions: List<Transaction>): List<LineData>{
+        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+
+        val last7Days = (6 downTo 0).map { i ->
+            val cal = Calendar.getInstance()
+            cal.add(Calendar.DAY_OF_YEAR, -i)
+            dateFormat.format(cal.time) to cal
+        }
+
+        val startOf7Days = last7Days.first().second.apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.timeInMillis
+
+        val recentExpensesGrouped = transactions
+            .filter { it.type == "EXPENSE" && it.dateTime >= startOf7Days }
+            .groupBy { dateFormat.format(Date(it.dateTime)) }
+
+        return last7Days.map { (dateLabel, _) ->
+            val dailyTotal = recentExpensesGrouped[dateLabel]
+                ?.sumOf { it.amount }
+                ?.toFloat() ?: 0f
+
+            LineData(
+                dateLabel, dailyTotal
+            )
         }
     }
 }

@@ -125,7 +125,7 @@ fun InsightsScreen(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 ComparisonBarChart(
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(12.dp),
+                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp),
                     data = { incomeExpenseData },
 
                 )
@@ -147,7 +147,7 @@ fun InsightsScreen(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 BarChart(
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(12.dp),
+                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp),
                     data = { sixMonthsData },
                 )
             }

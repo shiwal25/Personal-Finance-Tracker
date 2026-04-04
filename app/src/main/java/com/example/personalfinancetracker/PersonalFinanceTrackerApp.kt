@@ -197,11 +197,13 @@ fun PersonalFinanceTrackerApp(
             startDestination = PersonalFinanceTrackerScreen.Home.name,
         ) {
             composable (route = PersonalFinanceTrackerScreen.Home.name) {
+                val lastWeekData = transactionViewModel.getLastWeekData(transactionList)
                 HomeScreen(
                     balance = dashboardUiState.netBalance,
                     income = dashboardUiState.totalIncome,
                     expense = dashboardUiState.totalExpense,
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
+                    lastWeekData
                 )
             }
             composable (route = PersonalFinanceTrackerScreen.Transaction.name){
@@ -222,6 +224,7 @@ fun PersonalFinanceTrackerApp(
                 val monthlyPieData = transactionViewModel.getMonthlyCategoryData(transactionList)
                 val incomeExpenseData = transactionViewModel.getIncomeExpenseData(transactionList)
                 val sixMonthsData = transactionViewModel.getSixMonthData((transactionList))
+
                 InsightsScreen(
                     modifier = Modifier.padding(innerPadding),
                     pieChartData = monthlyPieData,

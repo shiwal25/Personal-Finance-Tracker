@@ -5,9 +5,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,15 +23,47 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.himanshoe.charty.bar.ComparisonBarChart
+import com.himanshoe.charty.line.AreaChart
+import com.himanshoe.charty.line.data.LineData
 
 @Composable
 fun HomeScreen(
     balance: Double,
     income: Double,
     expense: Double,
-    modifier:Modifier = Modifier
+    modifier:Modifier = Modifier,
+    lastWeekData: List<LineData>
 ) {
-    BalanceSection(balance, income, expense, modifier)
+    Column(
+        modifier = modifier
+        .fillMaxSize()
+        .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ){
+        BalanceSection(balance, income, expense, Modifier)
+
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth().padding(16.dp).height(300.dp),
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
+            colors = CardDefaults.elevatedCardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Last Week's Overview",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                AreaChart(
+                    { lastWeekData },
+                    modifier = Modifier.padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable

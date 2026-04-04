@@ -70,7 +70,7 @@ fun TransactionScreen(
                 value = searchQuery,
                 onValueChange = onSearchQueryChange,
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search category, note, amount, date...") },
+                placeholder = { Text("Search") },
                 leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
                 singleLine = true,
                 shape = MaterialTheme.shapes.large
