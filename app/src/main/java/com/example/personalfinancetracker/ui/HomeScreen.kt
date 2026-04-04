@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.personalfinancetracker.data.Transaction
 import com.himanshoe.charty.bar.ComparisonBarChart
 import com.himanshoe.charty.line.AreaChart
 import com.himanshoe.charty.line.data.LineData
@@ -63,6 +64,8 @@ fun HomeScreen(
                 )
             }
         }
+
+        /*TODO Budget adding and showing progress bar*/
     }
 }
 
