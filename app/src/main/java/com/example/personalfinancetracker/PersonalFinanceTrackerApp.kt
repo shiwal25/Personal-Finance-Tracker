@@ -187,6 +187,9 @@ fun PersonalFinanceTrackerApp(
 
         val transactionList by transactionViewModel.transactionListUiState.collectAsState()
 
+        val searchQuery by transactionViewModel.searchQuery.collectAsState()
+        val typeFilter by transactionViewModel.typeFilter.collectAsState()
+
         NavHost(
             navController = navController,
             startDestination = PersonalFinanceTrackerScreen.Home.name,
@@ -207,6 +210,10 @@ fun PersonalFinanceTrackerApp(
                         transactionViewModel.updateTransaction(transaction)
                         navController.navigate(PersonalFinanceTrackerScreen.AddTransaction.name)
                     },
+                    searchQuery,
+                    {transactionViewModel.updateSearchQuery(it)},
+                    typeFilter,
+                    {transactionViewModel.updateTypeFilter(it)}
                 )
             }
             composable (route = PersonalFinanceTrackerScreen.Insights.name){

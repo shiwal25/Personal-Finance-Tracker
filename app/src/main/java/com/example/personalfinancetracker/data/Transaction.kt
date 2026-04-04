@@ -15,4 +15,3 @@ data class Transaction (
     val dateTime: Long,
     val createdAt: Long = System.currentTimeMillis()
 )
-

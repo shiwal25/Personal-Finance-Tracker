@@ -11,18 +11,49 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 class TransactionViewModel(private val transactionRepository: TransactionsRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(TransactionUiState())
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
 
-    val transactionListUiState: StateFlow<List<Transaction>> =
-        transactionRepository.getAllTransactionsStream()
-            .stateIn(
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery = _searchQuery.asStateFlow()
+
+    private val _typeFilter = MutableStateFlow("ALL")
+    val typeFilter = _typeFilter.asStateFlow()
+
+    val transactionListUiState: StateFlow<List<Transaction>> = combine (
+            transactionRepository.getAllTransactionsStream(),
+            _searchQuery,
+            _typeFilter
+        ){  transactions, query, type ->
+        transactions.filter { transaction ->
+
+            val matchesType = type == "ALL" || transaction.type == type
+
+            val matchesQuery = if (query.isBlank()) {
+                true
+            } else {
+                val q = query.lowercase(Locale.getDefault())
+
+                val dateString = SimpleDateFormat("MMMM d, yy", Locale.getDefault())
+                    .format(Date(transaction.dateTime)).lowercase()
+
+                transaction.category.lowercase().contains(q) ||
+                        (transaction.description?.lowercase()?.contains(q) == true) ||
+                        transaction.amount.toString().contains(q) ||
+                        dateString.contains(q)
+            }
+            matchesType && matchesQuery
+        }
+        }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = emptyList()
@@ -115,5 +146,13 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
                 description = transaction.description ?: ""
             )
         }
+    }
+
+    fun updateSearchQuery(query: String) {
+        _searchQuery.value = query
+    }
+
+    fun updateTypeFilter(type: String) {
+        _typeFilter.value = type
     }
 }

@@ -1,5 +1,6 @@
 package com.example.personalfinancetracker.ui
 
+import android.provider.SyncStateContract
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,13 +17,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -44,22 +48,68 @@ fun TransactionScreen(
     transactions: List<Transaction>,
     modifier: Modifier = Modifier,
     onDelete: (Transaction) -> Unit,
-    onEdit: (Transaction) -> Unit
+    onEdit: (Transaction) -> Unit,
+    searchQuery: String,                         // Add this
+    onSearchQueryChange: (String) -> Unit,       // Add this
+    typeFilter: String,                          // Add this
+    onTypeFilterChange: (String) -> Unit,
 ) {
+    if(transactions.isEmpty()){
+        Column(modifier = modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+            Text("Click + to add a transaction")
+        }
+    }
     var selectedTransaction by remember { mutableStateOf<Transaction?>(null) }
     val sheetState = rememberModalBottomSheetState()
 
      val reversedTransactions = transactions.reversed()
 
-    Box(modifier = modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(reversedTransactions, key = { it.id }) { transaction ->
-                TransactionItem(
-                    transaction = transaction,
-                    onClick = { selectedTransaction = transaction }
+    Column(modifier = modifier.fillMaxSize()) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Search category, note, amount, date...") },
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+                singleLine = true,
+                shape = MaterialTheme.shapes.large
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = typeFilter == "ALL",
+                    onClick = { onTypeFilterChange("ALL") },
+                    label = { Text("All") }
                 )
+                FilterChip(
+                    selected = typeFilter == "INCOME",
+                    onClick = { onTypeFilterChange("INCOME") },
+                    label = { Text("Income") }
+                )
+                FilterChip(
+                    selected = typeFilter == "EXPENSE",
+                    onClick = { onTypeFilterChange("EXPENSE") },
+                    label = { Text("Expense") }
+                )
+            }
+        }
+
+        Box(modifier = Modifier.weight(1f)) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(reversedTransactions, key = { it.id }) { transaction ->
+                    TransactionItem(
+                        transaction = transaction,
+                        onClick = { selectedTransaction = transaction }
+                    )
+                }
             }
         }
     }
