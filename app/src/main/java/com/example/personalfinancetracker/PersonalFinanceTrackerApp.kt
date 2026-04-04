@@ -39,6 +39,7 @@ import com.example.personalfinancetracker.ui.AddTransactionScreen
 import com.example.personalfinancetracker.ui.DashBoardViewModel
 import com.example.personalfinancetracker.ui.DashBoardViewModelFactory
 import com.example.personalfinancetracker.ui.HomeScreen
+import com.example.personalfinancetracker.ui.TransactionScreen
 import com.example.personalfinancetracker.ui.TransactionViewModel
 import com.example.personalfinancetracker.ui.TransactionViewModelFactory
 
@@ -132,7 +133,6 @@ fun FinanceBottomBar(
 
 @Composable
 fun PersonalFinanceTrackerApp(
-//    transactionViewModel: TransactionViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
 ) {
     val context = LocalContext.current
@@ -185,6 +185,8 @@ fun PersonalFinanceTrackerApp(
         val transactionUiState by transactionViewModel.uiState.collectAsState()
         val dashboardUiState by dashBoardViewModel.uiState.collectAsState()
 
+        val transactionList by transactionViewModel.transactionListUiState.collectAsState()
+
         NavHost(
             navController = navController,
             startDestination = PersonalFinanceTrackerScreen.Home.name,
@@ -198,7 +200,14 @@ fun PersonalFinanceTrackerApp(
                 )
             }
             composable (route = PersonalFinanceTrackerScreen.Transaction.name){
-//                TransactionScreen()
+                TransactionScreen(transactionList,
+                    modifier = Modifier.padding(innerPadding),
+                    {transaction -> transactionViewModel.deleteTransaction(transaction)},
+                    {transaction ->
+                        transactionViewModel.updateTransaction(transaction)
+                        navController.navigate(PersonalFinanceTrackerScreen.AddTransaction.name)
+                    },
+                )
             }
             composable (route = PersonalFinanceTrackerScreen.Insights.name){
 

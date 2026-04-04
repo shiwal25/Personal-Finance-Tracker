@@ -225,7 +225,7 @@ fun CategorySelectionDialog(
                     ) {
                         RadioButton(
                             selected = (category == currentCategory),
-                            onClick = null // Let the Row handle the click
+                            onClick = null
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                         Text(text = category.displayName, fontSize = 16.sp)

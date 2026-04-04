@@ -4,7 +4,7 @@ import java.util.Date
 
 
 data class TransactionUiState (
-//    val transactions: List<Transaction> = emptyList(),  //only in transaction section while rest are used in add transaction page
+    val id: Long = 0,
     val amount: String = "0",
     val type:TransactionType = TransactionType.EXPENSE,
     val category: TransactionCategory = TransactionCategory.DEFAULT,

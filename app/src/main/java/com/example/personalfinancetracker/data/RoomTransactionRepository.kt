@@ -7,6 +7,10 @@ class RoomTransactionRepository(private val transactionDAO: TransactionDAO) : Tr
         return transactionDAO.getAllTransactions()
     }
 
+//    override fun getTransactionStream(id: Int): Flow<Transaction?> {
+//        return transactionDAO.getTransaction(id)
+//    }
+
     override fun getTotalIncome(): Flow<Double?> {
         return transactionDAO.getTotalIncome()
     }

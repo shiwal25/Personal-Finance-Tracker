@@ -3,17 +3,30 @@ package com.example.personalfinancetracker.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.personalfinancetracker.data.Transaction
+import com.example.personalfinancetracker.data.TransactionCategory
+import com.example.personalfinancetracker.data.TransactionType
 import com.example.personalfinancetracker.data.TransactionUiState
 import com.example.personalfinancetracker.data.TransactionsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class TransactionViewModel(private val transactionRepository: TransactionsRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(TransactionUiState())
     val uiState: StateFlow<TransactionUiState> = _uiState.asStateFlow()
+
+    val transactionListUiState: StateFlow<List<Transaction>> =
+        transactionRepository.getAllTransactionsStream()
+            .stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000L),
+        initialValue = emptyList()
+    )
 
     fun updateState(newState: TransactionUiState) {
         _uiState.update { newState }
@@ -46,6 +59,7 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
     fun saveTransaction():Boolean {
         val currentState = _uiState.value
         val amountToSave: Double = currentState.amount.toDoubleOrNull() ?: 0.0
+
         if(currentState.category.name == "DEFAULT"){
             _uiState.update { it.copy(errorMessage = "Please select a category") }
             return false
@@ -54,15 +68,23 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
             _uiState.update { it.copy(errorMessage = "Amount cannot be zero") }
             return false
         }
+
         viewModelScope.launch {
             val transaction = Transaction(
+                id = currentState.id,
                 amount = amountToSave,
                 type = currentState.type.name,
                 category = currentState.category.name,
                 description = currentState.description.ifBlank { null },
                 dateTime = currentState.date.time,
+                createdAt = System.currentTimeMillis()
             )
-            transactionRepository.insertTransaction(transaction)
+            if (currentState.id == 0L) {
+                transactionRepository.insertTransaction(transaction)
+            } else {
+                transactionRepository.updateTransaction(transaction)
+            }
+
             resetState()
         }
         return true
@@ -74,5 +96,24 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
 
     fun clearError() {
         _uiState.update { it.copy(errorMessage = null) }
+    }
+
+    fun deleteTransaction(transaction: Transaction) {
+        viewModelScope.launch {
+            transactionRepository.deleteTransaction(transaction)
+        }
+    }
+
+    fun updateTransaction(transaction: Transaction) {
+        _uiState.update {
+            it.copy(
+                id = transaction.id,
+                amount = transaction.amount.toString(),
+                type = TransactionType.valueOf(transaction.type),
+                category = TransactionCategory.valueOf(transaction.category),
+                date = Date(transaction.dateTime),
+                description = transaction.description ?: ""
+            )
+        }
     }
 }
