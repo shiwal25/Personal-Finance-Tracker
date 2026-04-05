@@ -1,4 +1,4 @@
-# 📊 [App Name] - Modern Android Expense Tracker
+# 📊Persoanl Finance Tracker
 
 An offline-first, intuitively designed personal finance application built entirely with **Kotlin** and **Jetpack Compose**. 
 
