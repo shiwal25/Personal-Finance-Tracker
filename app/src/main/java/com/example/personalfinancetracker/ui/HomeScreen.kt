@@ -1,6 +1,8 @@
 package com.example.personalfinancetracker.ui
 
+import android.R
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,10 +20,12 @@ import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.personalfinancetracker.data.Transaction
 import com.himanshoe.charty.bar.ComparisonBarChart
@@ -45,23 +49,38 @@ fun HomeScreen(
         BalanceSection(balance, income, expense, Modifier)
 
         ElevatedCard(
-            modifier = Modifier.fillMaxWidth().padding(16.dp).height(300.dp),
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
             colors = CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = if(isSystemInDarkTheme()) Color(0xFFCFD8DC) else MaterialTheme.colorScheme.surface
             )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Last Week's Overview",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF000000)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                AreaChart(
-                    { lastWeekData },
-                    modifier = Modifier.padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp)
-                )
+                if (lastWeekData.isEmpty()) {
+                    Text(
+                        text = "No expenses recorded this month.",
+                        modifier = Modifier.padding(16.dp),
+                        color = Color(0xFF000000)
+                    )
+                } else{
+                    Box(modifier = Modifier.fillMaxWidth().height(260.dp)) {
+                        key(lastWeekData) {
+                            AreaChart(
+                                { lastWeekData },
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp)
+                            )
+                        }
+                    }
+                }
             }
         }
 
@@ -142,3 +161,21 @@ fun BalanceCard(
         }
     }
 }
+
+//@Preview
+//@Composable
+//fun HomeScreenPreview(balance: Double = 0.0,
+//                      income: Double = 0.0,
+//                      expense: Double = 0.0,
+//                      lastWeekData: List<LineData> = listOf(
+//                          LineData("0", 1000.0F),
+//                          LineData("1", 1500.0F),
+//                          LineData("2", 1200.0F),
+//                          LineData("3", 1800.0F),
+//                          LineData("4", 1300.0F)
+//                      ),
+//                      modifier: Modifier = Modifier
+//) {
+//    HomeScreen(balance, income, expense, modifier, lastWeekData)
+//
+//}

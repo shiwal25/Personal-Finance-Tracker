@@ -1,6 +1,7 @@
 package com.example.personalfinancetracker.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +42,6 @@ fun InsightsScreen(
     incomeExpenseData: List<BarGroup>,
     sixMonthsData: List<BarData>
 ) {
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -53,21 +53,22 @@ fun InsightsScreen(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
             colors = CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = if(isSystemInDarkTheme()) Color(0xFFCFD8DC) else MaterialTheme.colorScheme.surface
             )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Expense Breakdown",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF000000)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 if (pieChartData.isEmpty()) {
                     Text(
                         text = "No expenses recorded this month.",
                         modifier = Modifier.padding(16.dp),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = Color(0xFF000000)
                     )
                 } else{
                     Row(
@@ -100,7 +101,8 @@ fun InsightsScreen(
                                     Spacer(modifier = Modifier.width(4.dp))
                                     Text(
                                         text = slice.label,
-                                        style = MaterialTheme.typography.bodyMedium
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = Color(0xFF000000)
                                     )
                                 }
                             }
@@ -114,21 +116,30 @@ fun InsightsScreen(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
             colors = CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = if(isSystemInDarkTheme()) Color(0xFFCFD8DC) else MaterialTheme.colorScheme.surface
             )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Cash Flow",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF000000)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                ComparisonBarChart(
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp),
-                    data = { incomeExpenseData },
+                if (incomeExpenseData.isEmpty()) {
+                    Text(
+                        text = "No expenses recorded this month.",
+                        modifier = Modifier.padding(16.dp),
+                        color = Color(0xFF000000)
+                    )
+                } else{
+                    ComparisonBarChart(
+                        modifier = Modifier.fillMaxWidth().height(200.dp).padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp),
+                        data = { incomeExpenseData },
 
-                )
+                        )
+                }
             }
         }
 
@@ -136,20 +147,29 @@ fun InsightsScreen(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
             colors = CardDefaults.elevatedCardColors(
-                containerColor = MaterialTheme.colorScheme.surface
+                containerColor = if(isSystemInDarkTheme()) Color(0xFFCFD8DC) else MaterialTheme.colorScheme.surface
             )
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Spending Trend",
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF000000)
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                BarChart(
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp),
-                    data = { sixMonthsData },
-                )
+                if (sixMonthsData.isEmpty()) {
+                    Text(
+                        text = "No expenses recorded this month.",
+                        modifier = Modifier.padding(16.dp),
+                        color = Color(0xFF000000)
+                    )
+                } else{
+                    BarChart(
+                        modifier = Modifier.fillMaxWidth().height(200.dp).padding(start = 28.dp, end = 12.dp, bottom = 12.dp, top = 12.dp),
+                        data = { sixMonthsData },
+                    )
+                }
             }
         }
     }

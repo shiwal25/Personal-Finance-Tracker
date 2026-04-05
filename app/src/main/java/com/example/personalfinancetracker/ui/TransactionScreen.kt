@@ -194,7 +194,7 @@ fun TransactionItem(
             val date = Date(transaction.dateTime)
             val formatter = SimpleDateFormat("MMMM d, yy", Locale.getDefault())
             Text(text = formatter.format(date), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(2.dp))
-            Text(text = transaction.type, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(2.dp))
+            transaction.description?.let { Text(text = it, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(2.dp)) }
         }
 
         Text(

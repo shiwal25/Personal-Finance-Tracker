@@ -228,7 +228,7 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
     )
 
     fun getIncomeExpenseData(transactions: List<Transaction>): List<BarGroup> {
-        val monthFormat = SimpleDateFormat("MMM", Locale.getDefault())
+        val monthFormat = SimpleDateFormat("MM", Locale.getDefault())
 
         val last6MonthsLabels = (5 downTo 0).map { i ->
             val cal = Calendar.getInstance()
@@ -245,6 +245,10 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
         val recentTransactionsGrouped = transactions
             .filter { it.dateTime >= sixMonthsAgo }
             .groupBy { monthFormat.format(Date(it.dateTime)) }
+
+        if (recentTransactionsGrouped.isEmpty()) {
+            return emptyList()
+        }
 
         return last6MonthsLabels.map { monthLabel ->
             val monthTransactions = recentTransactionsGrouped[monthLabel] ?: emptyList()
@@ -288,13 +292,17 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
             .groupBy { monthFormat.format(Date(it.dateTime)) }
             .mapValues { (_, list) -> list.sumOf { it.amount }.toFloat() }
 
+        if (groupedExpenses.isEmpty()) {
+            return emptyList()
+        }
+
         return last6MonthsLabels.map { monthLabel ->
             BarData(monthLabel, groupedExpenses[monthLabel] ?: 0f)
         }
     }
 
     fun getLastWeekData(transactions: List<Transaction>): List<LineData>{
-        val dateFormat = SimpleDateFormat("dd MMM", Locale.getDefault())
+        val dateFormat = SimpleDateFormat("dd", Locale.getDefault())
 
         val last7Days = (6 downTo 0).map { i ->
             val cal = Calendar.getInstance()
@@ -312,6 +320,10 @@ class TransactionViewModel(private val transactionRepository: TransactionsReposi
         val recentExpensesGrouped = transactions
             .filter { it.type == "EXPENSE" && it.dateTime >= startOf7Days }
             .groupBy { dateFormat.format(Date(it.dateTime)) }
+
+        if (recentExpensesGrouped.isEmpty()) {
+            return emptyList()
+        }
 
         return last7Days.map { (dateLabel, _) ->
             val dailyTotal = recentExpensesGrouped[dateLabel]
