@@ -2,7 +2,7 @@
 
 An offline-first, intuitively designed personal finance application built entirely with **Kotlin** and **Jetpack Compose**. 
 
-[App Name] helps users track their daily expenses, visualize their spending habits over time, and manage a monthly budget through a clean, responsive Material 3 user interface. 
+This app helps users track their daily expenses, visualize their spending habits over time, and manage a monthly budget through a clean, responsive Material 3 user interface. 
 
 ## ✨ Features
 
